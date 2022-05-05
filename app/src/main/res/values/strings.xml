@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GattServer</string>
+    <string name="server">Server</string>
+    <string name="client">Client</string>
+</resources>
