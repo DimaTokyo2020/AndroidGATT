@@ -9,19 +9,11 @@ object Constance {
     val SERIAL_REQUEST = UUID.fromString("0000ffe3-0000-1000-8000-00805f9b34fb")
 
 
-    val END_OF_MSG = "@END@"
 
-    //services
-    //00001801-0000-1000-8000-00805f9b34fb
-//00001800-0000-1000-8000-00805f9b34fb
-//0000ffe0-0000-1000-8000-00805f9b34fb
-//0000ffe0-0000-1000-8000-00805f9b34fb
-
-    //40:ED:B7:2B:98:0D S8
-    //88:9F:6F:77:E8:57 S10
-
-    //characteristics
-    //80323644-3537-466b-a53b-cf494eceaab3
     val MY_SERVICE_UUID: UUID = UUID.fromString("80323644-3588-4F0B-A53B-CF494ECEAAB3")
     val MY_CHARACTERISTIC_UUID: UUID = UUID.fromString("80323644-3537-466B-A53B-CF494ECEAAB3")
+
+
+    const val END_OF_MSG = "@END@"
+    const val NAX_ANDROID_MTU = 512
 }

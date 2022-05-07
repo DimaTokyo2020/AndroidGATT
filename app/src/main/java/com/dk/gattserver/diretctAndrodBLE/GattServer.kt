@@ -1,4 +1,4 @@
-package com.dk.gattserver
+package com.dk.gattserver.diretctAndrodBLE
 
 import android.annotation.SuppressLint
 import android.bluetooth.*
@@ -11,6 +11,9 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.ParcelUuid
 import android.util.Log
+import com.dk.gattserver.BluetoothUtils
+import com.dk.gattserver.Compressor
+import com.dk.gattserver.Constance
 import com.dk.gattserver.Constance.SERIAL_CHUNKS
 import com.dk.gattserver.Constance.SERIAL_MAIN
 

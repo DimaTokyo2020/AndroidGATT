@@ -1,4 +1,4 @@
-package com.dk.gattserver
+package com.dk.gattserver.diretctAndrodBLE
 
 import android.annotation.SuppressLint
 import android.bluetooth.*
@@ -6,6 +6,9 @@ import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
+import com.dk.gattserver.BluetoothUtils
+import com.dk.gattserver.Compressor
+import com.dk.gattserver.Constance
 
 public class GattClient(private val mContext: Context, private val mListener: ConnectListener) {
 

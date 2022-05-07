@@ -5,14 +5,14 @@ import android.bluetooth.BluetoothDevice
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.dk.gattserver.GattServer
+import com.dk.gattserver.diretctAndrodBLE.GattServer
 import com.dk.gattserver.R
 import kotlinx.android.synthetic.main.activity_server.*
 
 class ServerActivity : AppCompatActivity(), GattServer.ConnectionListener {
 
     private val TAG = ServerActivity::javaClass.name
-    lateinit var mGattServer:GattServer
+    lateinit var mGattServer: GattServer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

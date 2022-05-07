@@ -1,25 +1,17 @@
 package com.dk.gattserver.activities
 
 import android.annotation.SuppressLint
-import android.bluetooth.*
-import android.content.Context
+import android.bluetooth.BluetoothDevice
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.dk.gattserver.BluetoothUtils
-import com.dk.gattserver.BuildConfig
 import com.dk.gattserver.Constance
-import com.dk.gattserver.Constance.MY_SERVICE_UUID
 import com.dk.gattserver.R
 import com.dk.gattserver.nordic.BleClientMngr
 import com.dk.gattserver.nordic.server.BleAdvertiser
 import com.dk.gattserver.nordic.server.BleServerMngr
-import com.dk.gattserver.nordic.server.DeviceAPI
 import kotlinx.android.synthetic.main.activity_main.*
-import no.nordicsemi.android.ble.BleManager
-import no.nordicsemi.android.ble.BleServerManager
-import no.nordicsemi.android.ble.observer.ServerObserver
-import java.nio.charset.StandardCharsets
 import java.util.*
 
 
@@ -28,10 +20,9 @@ class MainActivity : AppCompatActivity() {
 
     private val          TAG:                         String = MainActivity::javaClass.name
     private var          mBleMngr:                    BleClientMngr? = null
-    private lateinit var mUtils:                     BluetoothUtils
-    private var          serverManager:               BleServerMngr? = null
+    private lateinit var mUtils:                      BluetoothUtils
+    private lateinit var serverManager:               BleServerMngr
     private var          bleAdvertiseCallback:        BleAdvertiser.Callback? = null
-    private lateinit var mSender:                     DataPlane
 
 
 
@@ -53,11 +44,35 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     fun testClientNordic() {
 
-        mBleMngr = BleClientMngr(this)
+        mBleMngr = BleClientMngr(this, object:BleClientMngr.GattClientConnectionListener{
+
+            override fun connectedToGATT(device: BluetoothDevice) {
+                Log.i(TAG, "Connected to gatt: ${device.name}" )
+            }
+
+            override fun failedConnectingToGatt(device: BluetoothDevice) {
+                Log.i(TAG, "Failed connecting to gatt: ${device.name}" )
+            }
+
+            override fun successfullySubscribe(uuid: UUID) {
+                Log.i(TAG, "successfully subscribe to : $uuid" )
+            }
+
+            override fun failedSubscribe(uuid: UUID) {
+                Log.i(TAG, "filed subscribe to : $uuid" )
+            }
+
+            override fun disconnected() {
+                Log.i(TAG, "Disconnected" )
+            }
+
+        }
+
+            )
         BluetoothUtils(this).mBluetoothAdapter?.bondedDevices
             ?.forEach { device ->
                 Log.d(TAG, "Found connected device: ${device.name}")
-                mBleMngr?.addDevice(device)
+                mBleMngr?.connectToDeviceGATT(device)
             }
 
     }
@@ -65,9 +80,9 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     fun testServerNordic() {
         serverManager = BleServerMngr(this)
-        serverManager!!.open()
+        serverManager.open()
 
-        bleAdvertiseCallback = BleAdvertiser.Callback()
+        bleAdvertiseCallback = BleAdvertiser.Callback()//TODO implement
 
         mUtils.mBluetoothAdapter.bluetoothLeAdvertiser?.startAdvertising(
             BleAdvertiser.settings(),
@@ -75,25 +90,18 @@ class MainActivity : AppCompatActivity() {
             bleAdvertiseCallback!!
         )
 
-        mSender = DataPlane()
     }
 
 
     var msg = "My message___1"
     private fun testSend(){
         msg +=msg
-        mSender.setMyCharacteristicValue(msg)
+        serverManager.setMyCharacteristicValue(msg)
+        serverManager.setMyCharacteristicValue(Constance.END_OF_MSG)
     }
 
 
-    private inner class DataPlane : DeviceAPI {
 
-        override fun setMyCharacteristicValue(value: String) {
-            serverManager?.setMyCharacteristicValue(value)
-            serverManager?.setMyCharacteristicValue(Constance.END_OF_MSG)
-        }
-
-    }
 
 
 

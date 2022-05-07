@@ -12,11 +12,10 @@ import no.nordicsemi.android.ble.observer.ServerObserver
 import java.nio.charset.StandardCharsets
 import java.util.*
 
- /*
-     * Manages the entire GATT service, declaring the services and characteristics on offer
-     */
-public class BleServerMngr(val context: Context) : BleServerManager(context), ServerObserver,
-    DeviceAPI {
+/*
+    * Manages the entire GATT service, declaring the services and characteristics on offer
+    */
+public class BleServerMngr(val context: Context) : BleServerManager(context), ServerObserver {
 
     companion object {
         val TAG = BleServerMngr::class.java.simpleName
@@ -44,6 +43,8 @@ public class BleServerMngr(val context: Context) : BleServerManager(context), Se
         ),
         description("A characteristic to be read", false) // descriptors
     )
+
+
     private val myGattService = service(
         // UUID:
         Constance.MY_SERVICE_UUID,
@@ -53,9 +54,11 @@ public class BleServerMngr(val context: Context) : BleServerManager(context), Se
 
     private val myGattServices = Collections.singletonList(myGattService)
 
+
     private val serverConnections = mutableMapOf<String, ServerConnection>()
 
-    override fun setMyCharacteristicValue(value: String) {
+
+    fun setMyCharacteristicValue(value: String) {
         Log.d(TAG, "setMyCharacteristicValue: $value")
         val bytes = value.toByteArray(StandardCharsets.UTF_8)
         myGattCharacteristic.value = bytes
@@ -112,10 +115,7 @@ public class BleServerMngr(val context: Context) : BleServerManager(context), Se
         fun sendNotificationForMyGattCharacteristic(value: ByteArray) {
             Log.d(TAG, "setMyCharacteristicValue: $value")
 //            writeCharacteristic(myGattCharacteristic, value, BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE).split().enqueue()
-
-            sendNotification(myGattCharacteristic, value).split(
-
-            ).enqueue()
+            sendNotification(myGattCharacteristic, value).split().enqueue()
         }
 
         override fun log(priority: Int, message: String) {
@@ -129,17 +129,22 @@ public class BleServerMngr(val context: Context) : BleServerManager(context), Se
             return gattCallback!!
         }
 
+
+
         private inner class GattCallback() : BleManagerGattCallback() {
 
             // There are no services that we need from the connecting device, but
             // if there were, we could specify them here.
             override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
+                Log.d(TAG, "isRequiredServiceSupported()")
                 return true
             }
 
             override fun onServicesInvalidated() {
                 // This is the place to nullify characteristics obtained above.
+                Log.d(TAG, "onServicesInvalidated()")
             }
+
         }
     }
 }
